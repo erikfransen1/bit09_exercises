@@ -1,0 +1,11 @@
+### exercise fastqc
+
+# download .fastq.gz file from ENA or GEO
+
+#from complete fastqc.gz, unzip and xtract first 1000 lines
+# run fastqc --> html document
+
+gunzip SRR1777612_1.fastq.gz
+head -n 1000 SRR1777612_1.fastq > first1000.fastq
+fastqc --extract -t 4 -o /home/bit/exercises/ first1000.fastq
+firefox first1000_fastqc.html
