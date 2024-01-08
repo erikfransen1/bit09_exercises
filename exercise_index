@@ -1,0 +1,49 @@
+############################################
+### exercise make new index using HISAT2
+############################################
+
+# genome index
+##########################
+
+#1# download from igenomes Illumina site
+# contains fasta and annotation files
+
+sudo wget https://s3.amazonaws.com/igenomes.illumina.com/Caenorhabditis_elegans/UCSC/ce10/Caenorhabditis_elegans_UCSC_ce10.tar.gz
+sudo tar -zxvf Caenorhabditis_elegans_UCSC_ce10.tar.gz
+
+# Annotations file (genes.gtf) in folder:
+/home/bit/BIT09/exercises/Caenorhabditis_elegans/UCSC/ce10/Annotation/Genes
+
+# Genomic FAST file (genome.fa) in: 
+/home/bit/BIT09/exercises/Caenorhabditis_elegans/UCSC/ce10/Sequence/WholeGenomeFasta
+
+#2# Construct index files for C.elegans
+# first argument = genomic fasta
+# second argument = output dir with basename (MUST ALREADY EXIST!!)
+
+mkdir hisat2-index-ce10_genome
+hisat2-build Caenorhabditis_elegans/UCSC/ce10/Sequence/WholeGenomeFasta/genome.fa hisat2-index-ce10_genome/genome -p 8
+
+# creates files genome.1.ht2 , genome.2.ht2 in folde hisat2-index-ce10_genome
+
+
+### transcritptome index
+#############################
+# using genes.gtf file, create ce10.ss file with splice sites and cel10.exon with exon boundaries
+mkdir hisat2-index-ce10_genome_tran
+
+#1# Extract splice sites (in /data/igenomes/ folder)
+hisat2_extract_splice_sites.py Caenorhabditis_elegans/UCSC/ce10/Annotation/Genes/genes.gtf >hisat2-index-ce10_genome_tran/ce10.ss 
+
+#2# Extract exons
+hisat2_extract_exons.py Caenorhabditis_elegans/UCSC/ce10/Annotation/Genes/genes.gtf >hisat2-index-ce10_genome_tran/ce10.exon 
+
+#3# Build genome_tran index
+hisat2-build --ss hisat2-index-ce10_genome_tran/ce10.ss --exon hisat2-index-ce10_genome_tran/ce10.exon Caenorhabditis_elegans/UCSC/ce10/Sequence/WholeGenomeFasta/genome.fa hisat2-index-ce10_genome_tran/genome_tran -p 8
+
+# write last 3 commands into bashMakeIndex.sh
+
+chmod +x bashMakeIndex.sh
+run in tmux session
+
+# creates files genome_tran.1.ht2 , genome_tran.2.ht2 in folder hisat2-index-ce10_genome_tran
