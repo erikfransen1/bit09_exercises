@@ -1,7 +1,8 @@
 ### exercises file formats ###
 
+###########################
 # fastq exercise
-#####################
+###########################
 # search for project
 # download 1 file (not all files !!)
 
@@ -15,7 +16,7 @@ gzip -d SRR1777612_1.fastq.gz
 # --> unzipped file
 head -n 12 SRR1777612_1.fastq> first12 
 
-
+#####################
 # VCF exercise
 #####################
 # using Filezilla, download BALBc indelfile from ebi
@@ -25,10 +26,29 @@ BALB_cJ.mgp.v5.indels.dbSNP142.normed.vcf -->unzip
 
 head -n72 BALB_cJ.mgp.v5.indels.dbSNP142.normed.vcf > headBALB
 
-
-# exercise GFF/GTF
-######################
+######################################################
+# exercise GFF/GTF via podman/docker container
+######################################################
 # download from lncpedia/org --> GRCh37/hg19, high-confidence set
 
 head -n4 lncipedia_5_2_hc_hg19.gff > headgff
 head -n4 lncipedia_5_2_hc_hg19.gtf > headgtf
+
+move .gff to Documents folder (= mount file for cntainer)
+
+# Get AGAT container with docker pull 
+docker pull quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0
+
+# start up container
+docker run -it -v /home/bit/Documents/:/home/bit:z quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0
+
+# (now you're in the container)
+
+in container : go to home/bit folder (=working directory from container)
+
+agat_convert_sp_gff2gtf.pl --gff lncipedia_5_2_hc_hg19.gff -o lncipedia_5_2_hc_hg19.gtf 
+
+# output file .gtf is now in /home/bit file of container (**not in /home/bit from host!)
+# on VM : output folder = in mount folder  /home/bit/Documents
+
+exit from container
