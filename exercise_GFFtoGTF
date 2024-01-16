@@ -1,0 +1,17 @@
+
+######################################################
+# exercise GFF/GTF via podman/docker container
+######################################################
+# download from lncpedia/org --> GRCh37/hg19, high-confidence set
+
+head -n4 lncipedia_5_2_hc_hg19.gff > headgff
+head -n4 lncipedia_5_2_hc_hg19.gtf > headgtf
+
+move .gff to Documents folder (= mount file for cntainer)
+
+# Get AGAT container with docker pull 
+docker pull quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0
+
+# start up container
+docker run -it -v /home/bit/Documents/:/home/bit:z quay.io/biocontainers/agat:0.8.0--pl5262hdfd78af_0
+
